@@ -1,0 +1,40 @@
+rules:
+  - id: CIS-L1-001
+    name: "Ensure SSH Root Login is Disabled"
+    platform: linux
+    command: "grep '^PermitRootLogin' /etc/ssh/sshd_config"
+    expected_output: "PermitRootLogin no"
+    severity: high
+    remediation: "Edit /etc/ssh/sshd_config and set PermitRootLogin to no"
+
+  - id: CIS-L1-002
+    name: "Ensure Password Authentication is Disabled"
+    platform: linux
+    command: "grep '^PasswordAuthentication' /etc/ssh/sshd_config"
+    expected_output: "PasswordAuthentication no"
+    severity: high
+    remediation: "Edit /etc/ssh/sshd_config and set PasswordAuthentication to no"
+
+  - id: CIS-L1-003
+    name: "Check /etc/passwd Permissions"
+    platform: linux
+    command: "ls -l /etc/passwd"
+    expected_output: "-rw-r--r--"
+    severity: medium
+    remediation: "Run 'chmod 644 /etc/passwd'"
+
+  - id: CIS-L1-004
+    name: "Check /etc/shadow Permissions"
+    platform: linux
+    command: "ls -l /etc/shadow"
+    expected_output: "-rw-------"
+    severity: high
+    remediation: "Run 'chmod 600 /etc/shadow'"
+
+  - id: CIS-L1-005
+    name: "Ensure Firewall is Enabled"
+    platform: linux
+    command: "systemctl is-active firewalld"
+    expected_output: "active"
+    severity: high
+    remediation: "Run 'systemctl enable firewalld' and 'systemctl start firewalld'"

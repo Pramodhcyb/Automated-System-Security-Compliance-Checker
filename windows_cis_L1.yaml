@@ -1,0 +1,88 @@
+rules:
+  - id: CIS-W1-001
+    name: "Ensure Windows Firewall is Enabled"
+    platform: windows
+    command: "powershell -Command 'Get-NetFirewallProfile | Select-Object Name,Enabled | Format-List'"
+    expected_output: "Enabled : True"
+    severity: high
+    remediation: "Enable Windows Firewall through Windows Security settings or run 'Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled True'"
+
+  - id: CIS-W1-002
+    name: "Check Windows Update Status"
+    platform: windows
+    command: "powershell -Command 'Get-WindowsUpdateLog | Select-Object -Last 1'"
+    expected_output: "Installed"
+    severity: high
+    remediation: "Run Windows Update to install pending updates"
+
+  - id: CIS-W1-003
+    name: "Check Remote Desktop Access"
+    platform: windows
+    command: "powershell -Command 'Get-ItemProperty -Path "HKLM:\System\CurrentControlSet\Control\Terminal Server" -Name "fDenyTSConnections" | Select-Object -ExpandProperty fDenyTSConnections'"
+    expected_output: "1"
+    severity: high
+    remediation: "Disable Remote Desktop if not needed or configure it securely"
+
+  - id: CIS-W1-004
+    name: "Check User Account Control (UAC)"
+    platform: windows
+    command: "powershell -Command 'Get-ItemProperty -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System" -Name "EnableLUA" | Select-Object -ExpandProperty EnableLUA'"
+    expected_output: "1"
+    severity: high
+    remediation: "Enable UAC through Windows Security settings"
+
+  - id: CIS-W1-005
+    name: "Check Windows Defender Status"
+    platform: windows
+    command: "powershell -Command 'Get-MpComputerStatus | Select-Object AMServiceEnabled,AntivirusEnabled,AntispywareEnabled'"
+    expected_output: "AMServiceEnabled : True\nAntivirusEnabled : True\nAntispywareEnabled : True"
+    severity: high
+    remediation: "Enable Windows Defender through Windows Security settings"
+
+  - id: CIS-W1-006
+    name: "Check Administrator Account Status"
+    platform: windows
+    command: "powershell -Command 'Get-LocalUser -Name "Administrator" | Select-Object -ExpandProperty PasswordLastSet'"
+    expected_output: ".*"  # Should have a recent date
+    severity: high
+    remediation: "Change Administrator password regularly"
+
+  - id: CIS-W1-007
+    name: "Check Local Security Policy - Password Complexity"
+    platform: windows
+    command: "powershell -Command 'secedit /export /cfg c:\temp\secpol.cfg ; Get-Content c:\temp\secpol.cfg | Select-String "PasswordComplexity"'"
+    expected_output: "PasswordComplexity = 1"
+    severity: high
+    remediation: "Enable password complexity requirements through Local Security Policy"
+
+  - id: CIS-W1-008
+    name: "Check Local Security Policy - Minimum Password Length"
+    platform: windows
+    command: "powershell -Command 'secedit /export /cfg c:\temp\secpol.cfg ; Get-Content c:\temp\secpol.cfg | Select-String "MinimumPasswordLength"'"
+    expected_output: "MinimumPasswordLength = 12"
+    severity: high
+    remediation: "Set minimum password length to 12 characters through Local Security Policy"
+
+  - id: CIS-W1-009
+    name: "Check Windows Services - Telnet"
+    platform: windows
+    command: "powershell -Command 'Get-Service -Name "TlntSvr" | Select-Object -ExpandProperty StartType'"
+    expected_output: "Disabled"
+    severity: medium
+    remediation: "Disable Telnet service through Windows Services"
+
+  - id: CIS-W1-010
+    name: "Check Windows Services - Remote Registry"
+    platform: windows
+    command: "powershell -Command 'Get-Service -Name "RemoteRegistry" | Select-Object -ExpandProperty StartType'"
+    expected_output: "Disabled"
+    severity: medium
+    remediation: "Disable Remote Registry service through Windows Services"
+
+  - id: CIS-W1-011
+    name: "Check Windows Services - SMBv1"
+    platform: windows
+    command: "powershell -Command 'Get-SmbServerConfiguration | Select-Object EnableSMB1Protocol'"
+    expected_output: "EnableSMB1Protocol : False"
+    severity: high
+    remediation: "Disable SMBv1 through Windows Features or PowerShell command"
