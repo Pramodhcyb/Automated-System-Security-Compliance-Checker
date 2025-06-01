@@ -15,7 +15,7 @@ SecuAudit is an automated security compliance checking tool that verifies system
 
 1. Clone the repository:
 ```bash
-git clone [https://github.com/Pramodhcyb/Automated-System-Security-Compliance-Checker]
+git clone https://github.com/Pramodhcyb/Automated-System-Security-Compliance-Checker
 cd secuaudit
 ```
 
